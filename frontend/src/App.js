@@ -29,7 +29,7 @@ function App() {
         const targetUrl = isOnLoginScreen ? '/api/login/' : '/api/register/';
         
         try {
-            const backendResponse = await axios.post(`http://127.0.0.1:8000${targetUrl}`, { 
+            const backendResponse = await axios.post(`http://206.81.26.100:8000${targetUrl}`, { 
                 username: typedUsername, 
                 password: typedPassword 
             });
