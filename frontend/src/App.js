@@ -25,7 +25,7 @@ function App() {
     };
 
     return (
-        // TODO: move styles to a separate css file before turning this in
+        // : move styles to a separate css file before turning this in
         <div style={{ maxWidth: '600px', margin: '50px auto', fontFamily: 'monospace', textAlign: 'center' }}>
             <h1>BullsAI</h1>
             <p>Enter a stock ticker to get an AI-powered prediction.</p>

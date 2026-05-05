@@ -22,13 +22,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-oux1&6-t6g9^foy=!ws2wa@8j3m!iy59oagvek-8*(8x**)=2r'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = False
+
+# strictly limiting this to local testing for the security requirement
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
-# Application definition
+# application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -73,7 +74,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
+# database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
@@ -84,7 +85,7 @@ DATABASES = {
 }
 
 
-# Password validation
+# password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -103,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+# internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
@@ -115,9 +116,24 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# static files 
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
 
-CORS_ALLOW_ALL_ORIGINS = True
+
+
+# only allowing our local react frontend to talk to the backend now
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+    "http://localhost:3000",
+]
+
+# --- OWASP TOP 10 FIXES ---
+# blindly adding these security headers because the ZAP report said they were missing
+# prevents cross-site scripting (XSS) and clickjacking 
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
