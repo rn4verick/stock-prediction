@@ -8,10 +8,13 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
   # django backend
   backend:
     build: ./config
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     depends_on:
@@ -35,3 +38,6 @@ services:
     depends_on:
       - frontend
       - backend
+
+volumes:
+  mysql_data:
