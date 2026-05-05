@@ -1,5 +1,8 @@
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .models import SavedPrediction
 import joblib
 import random
 import os
@@ -41,3 +44,60 @@ def predict_stock(request):
         'stats': stats, 
         'ticker': ticker
     })
+
+# --- USER REGISTRATION ---
+@api_view(['POST'])
+def register_user(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    # check if they are trying to steal a name
+    if User.objects.filter(username=username).exists():
+        return Response({"error": "Username already taken"}, status=400)
+        
+    # create and save the new user securely
+    user = User.objects.create_user(username=username, password=password)
+    return Response({"message": "User created successfully!"})
+
+# --- USER LOGIN ---
+@api_view(['POST'])
+def login_user(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    # django checks the database for us
+    user = authenticate(username=username, password=password)
+    
+    if user is not None:
+        return Response({"message": "Login successful", "username": username})
+    else:
+        return Response({"error": "Invalid credentials"}, status=400)
+    
+@api_view(['POST'])
+def add_to_watchlist(request):
+    # CREATE: grab data from the frontend and shove it into MySQL
+    who_is_it = request.data.get('username')
+    user_account = User.objects.get(username=who_is_it)
+    
+    SavedPrediction.objects.create(
+        owner=user_account, 
+        ticker_symbol=request.data.get('ticker'), 
+        prediction_text=request.data.get('prediction')
+    )
+    return Response({"message": "Successfully saved!"})
+
+@api_view(['GET'])
+def fetch_my_watchlist(request):
+    # READ: find everything belonging to this specific user
+    who_is_it = request.query_params.get('username')
+    user_account = User.objects.get(username=who_is_it)
+    
+    # grab the list and format it for React
+    my_stocks = SavedPrediction.objects.filter(owner=user_account).values('id', 'ticker_symbol', 'prediction_text')
+    return Response(list(my_stocks))
+
+@api_view(['DELETE'])
+def drop_from_watchlist(request, item_id):
+    # DELETE: nuke it by its ID
+    SavedPrediction.objects.get(id=item_id).delete()
+    return Response({"message": "Deleted from list"})
