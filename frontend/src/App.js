@@ -29,7 +29,7 @@ function App() {
         const targetUrl = isOnLoginScreen ? '/api/login/' : '/api/register/';
         
         try {
-            const backendResponse = await axios.post(`http://206.81.26.100:8000${targetUrl}`, { 
+            const backendResponse = await axios.post(`http://206.81.26.100${targetUrl}`, { 
                 username: typedUsername, 
                 password: typedPassword 
             });
@@ -55,7 +55,7 @@ function App() {
 
         setWaitingForAi(true);
         try {
-            const aiResponse = await axios.post('http://127.0.0.1:8000/api/predict/', { ticker: stockSymbol });
+            const aiResponse = await axios.post('http://206.81.26.100/api/predict/', { ticker: stockSymbol });
             setAiPredictionData(aiResponse.data);
         } catch (errorDetails) {
             console.error(errorDetails);
@@ -69,7 +69,7 @@ function App() {
     // pull the list from the database
     const refreshMyList = async () => {
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/get-list/?username=${loggedInUser}`);
+            const res = await axios.get(`http://206.81.26.100/api/get-list/?username=${loggedInUser}`);
             setMySavedStocks(res.data);
         } catch (err) {
             console.error("couldnt get the list", err);
@@ -79,7 +79,7 @@ function App() {
     // shove a prediction into the database
     const saveThisPrediction = async () => {
         try {
-            await axios.post('http://127.0.0.1:8000/api/save-it/', {
+            await axios.post('http://206.81.26.100/api/save-it/', {
                 username: loggedInUser,
                 ticker: stockSymbol,
                 prediction: aiPredictionData.prediction
@@ -93,7 +93,7 @@ function App() {
     // kill an entry from the list
     const nukeStock = async (id) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/remove-it/${id}/`);
+            await axios.delete(`http://206.81.26.100/api/remove-it/${id}/`);
             refreshMyList(); // update the view
         } catch (err) {
             alert("failed to delete");
