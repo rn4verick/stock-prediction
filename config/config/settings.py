@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     '206.81.26.100',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -88,8 +89,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'oracle_db',
+        'USER': 'root',
+        'PASSWORD': 'rootpassword',
+        'HOST': 'db',
+        'PORT': '3306'
     }
 }
 
@@ -130,15 +135,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-
-
-# only allowing our local react frontend to talk to the backend now
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost",
-    "http://127.0.0.1",
-    "http://localhost:3000",
-]
 
 # --- OWASP TOP 10 FIXES ---
 # blindly adding these security headers because the ZAP report said they were missing
